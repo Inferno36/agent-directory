@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sample-agent-1",
+    "name": "Sample Data Processor",
+    "description": "An example agent that processes and transforms data from multiple sources",
+    "githubUrl": "https://github.com/yourusername/sample-data-processor",
+    "category": "Data Processing",
+    "status": "stable",
+    "techStack": ["Python", "Pandas", "FastAPI"],
+    "lastUpdated": "2024-12-20"
+  },
+  {
+    "id": "sample-agent-2",
+    "name": "Task Automator",
+    "description": "Automates repetitive tasks and workflows across multiple platforms",
+    "githubUrl": "https://github.com/yourusername/task-automator",
+    "category": "Automation",
+    "status": "beta",
+    "techStack": ["Node.js", "TypeScript", "Puppeteer"],
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "id": "sample-agent-3",
+    "name": "System Monitor",
+    "description": "Real-time monitoring dashboard for system health and performance metrics",
+    "githubUrl": "https://github.com/yourusername/system-monitor",
+    "category": "Monitoring",
+    "status": "stable",
+    "techStack": ["Go", "Prometheus", "Grafana"],
+    "lastUpdated": "2024-12-15",
+    "demoUrl": "https://monitor-demo.example.com"
+  }
+]
