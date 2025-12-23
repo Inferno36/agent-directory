@@ -14,6 +14,7 @@ import Link from "next/link";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [password, setPassword] = useState("");
   const [agents, setAgents] = useState<Agent[]>([]);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
@@ -35,14 +36,18 @@ export default function AdminPage() {
   }, []);
 
   const checkAuth = async () => {
+    setIsCheckingAuth(true);
     try {
-      const response = await fetch("/api/agents");
-      if (response.ok) {
+      const response = await fetch("/api/auth/check");
+      const data = await response.json();
+      if (data.authenticated) {
         setIsAuthenticated(true);
-        fetchAgents();
+        await fetchAgents();
       }
     } catch (error) {
       console.error("Error checking auth:", error);
+    } finally {
+      setIsCheckingAuth(false);
     }
   };
 
@@ -59,9 +64,10 @@ export default function AdminPage() {
       });
 
       if (response.ok) {
-        setIsAuthenticated(true);
         setPassword("");
-        fetchAgents();
+        // Show loading while fetching agents
+        await fetchAgents();
+        setIsAuthenticated(true);
       } else {
         setError("Invalid password");
       }
@@ -177,6 +183,22 @@ export default function AdminPage() {
     });
   };
 
+  // Show loading state while checking auth
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-white/5 border-white/10">
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-gray-400">Checking authentication...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -200,9 +222,18 @@ export default function AdminPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 bg-white/5 border-white/10 text-white"
                   required
+                  disabled={loading}
                 />
               </div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
+              {loading && (
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-md p-3">
+                  <div className="flex items-center gap-2 text-blue-400 text-sm">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                    <span>Logging in and loading data...</span>
+                  </div>
+                </div>
+              )}
               <Button
                 type="submit"
                 className="w-full bg-white text-black hover:bg-white/90"
