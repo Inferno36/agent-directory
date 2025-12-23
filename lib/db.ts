@@ -45,9 +45,10 @@ export async function getAllAgents(): Promise<Agent[]> {
 
 export async function createAgent(agent: Agent): Promise<Agent> {
   try {
+    const techStackArray = `{${agent.techStack.map(t => `"${t}"`).join(',')}}`;
     await sql`
       INSERT INTO agents (id, name, description, github_url, category, status, tech_stack, last_updated, demo_url)
-      VALUES (${agent.id}, ${agent.name}, ${agent.description}, ${agent.githubUrl}, ${agent.category}, ${agent.status}, ${agent.techStack}, ${agent.lastUpdated}, ${agent.demoUrl || null})
+      VALUES (${agent.id}, ${agent.name}, ${agent.description}, ${agent.githubUrl}, ${agent.category}, ${agent.status}, ${techStackArray}::text[], ${agent.lastUpdated}, ${agent.demoUrl || null})
     `;
     return agent;
   } catch (error) {
@@ -58,6 +59,7 @@ export async function createAgent(agent: Agent): Promise<Agent> {
 
 export async function updateAgent(agent: Agent): Promise<Agent> {
   try {
+    const techStackArray = `{${agent.techStack.map(t => `"${t}"`).join(',')}}`;
     await sql`
       UPDATE agents
       SET name = ${agent.name},
@@ -65,7 +67,7 @@ export async function updateAgent(agent: Agent): Promise<Agent> {
           github_url = ${agent.githubUrl},
           category = ${agent.category},
           status = ${agent.status},
-          tech_stack = ${agent.techStack},
+          tech_stack = ${techStackArray}::text[],
           last_updated = ${agent.lastUpdated},
           demo_url = ${agent.demoUrl || null}
       WHERE id = ${agent.id}

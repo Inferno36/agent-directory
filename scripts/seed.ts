@@ -54,9 +54,10 @@ async function seed() {
     ];
 
     for (const agent of sampleAgents) {
+      const techStackArray = `{${agent.techStack.map(t => `"${t}"`).join(',')}}`;
       await sql`
         INSERT INTO agents (id, name, description, github_url, category, status, tech_stack, last_updated, demo_url)
-        VALUES (${agent.id}, ${agent.name}, ${agent.description}, ${agent.githubUrl}, ${agent.category}, ${agent.status}, ${agent.techStack}, ${agent.lastUpdated}, ${agent.demoUrl || null})
+        VALUES (${agent.id}, ${agent.name}, ${agent.description}, ${agent.githubUrl}, ${agent.category}, ${agent.status}, ${techStackArray}::text[], ${agent.lastUpdated}, ${agent.demoUrl || null})
         ON CONFLICT (id) DO NOTHING
       `;
     }
